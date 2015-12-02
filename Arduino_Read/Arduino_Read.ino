@@ -1,9 +1,10 @@
+/* This code matches with test_i2c to illustrate communication between 
+the arduino (slave) and Launchpad (master)*/
+
 #include <Wire.h>
 
-byte d1=0;
-byte d2=0;
-//byte ADDR=2;
-bool opt=1;
+int8_t data[2] = {0, 0};
+
 void setup()
 {
   Wire.begin(42);        // join i2c bus (address optional for master)
@@ -12,15 +13,14 @@ void setup()
 
 void loop()
 {
-  Wire.requestFrom(2, 2, opt);    // request 2 bytes from slave device #43
+  Wire.requestFrom(43, 2);    // request 2 bytes from slave device #43
 
   
- if(Wire.available())    // slave may send less than requested
+ if(Wire.available()) // If there are byte, assume there will always be 2
 { 
- d1 = Wire.read();
- d2 = Wire.read();    // receive a byte as character
- Serial.print(d1,d2);         // print the character
+ data[0] = (int8_t)Wire.read();
+ data[0] = (int8_t)Wire.read();
+ Serial.print(data[0]);Serial.println(data[1]);  // print the data
  }
-Serial.println("loop");
 delay(1000);
 }
