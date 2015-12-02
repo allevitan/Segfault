@@ -1,0 +1,98 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{empheq}
+\usepackage{epstopdf}
+\usepackage{subcaption}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{listings}
+
+
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+\newcommand{\dvec}[1]{\dot{\vec{#1}}}
+\newcommand{\ddvec}[1]{\ddot{\vec{#1}}}
+
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Math for Sensors in the Segway}
+\author{Abe Levitan}
+\date{\today}                                           % Activate to display a given date or no date
+
+\begin{document}
+\lstset{language=Python}
+\maketitle
+
+\section{Inputs}
+
+\subsection{Sensors}
+\ \\ \ \\
+Our sensors consist of two 6-axis accelerometer/gyro combos, and two 100-step-per-revolution encoders. Both accelerometers are mounted with their x axis perpendicular to the platform and their y axis parallel to the platform. From now on, we'll refer to the accelerometer x-axis as the $\hat{r}$ direction, and the y-axis as the $\hat{\theta}$ direction, reserving x and y for the lab reference frame.
+
+One accelerometer, accelerometer 1, is mounted in line with the wheel axles. The other accelerometer, accelerometer 2 is mounted off-axis. This lets us easily separate the motion of the wheels from the motion of the platform and handle. Both encoders are mounted on the wheel axles.
+
+\subsection{Measurement of $\omega$} 
+\ \\ \ \\
+$\omega$, the angular velocity, is the most robust measurement we have. We have three independent ways to calculate it. The first and second are to directly use $\omega_1$ and $\omega_2$, the angular velocity measurements about the z axis output by the accelerometer/gyro packages.
+
+We can also calculate $\omega$ using the centrifugal acceleration. We write out the full expression for acceleration at both accelerometers, in the platform frame of reference.
+
+\begin{equation}
+\begin{bmatrix}
+a_{r1} \\ a_{\theta1}
+\end{bmatrix} = \begin{bmatrix}
+\cos(\theta) & \sin(\theta) \\ -\sin(\theta) & \cos(\theta)
+\end{bmatrix} \begin{bmatrix}
+-g \\ \ddot{x}
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\begin{bmatrix}
+a_{r2} \\ a_{\theta2}
+\end{bmatrix} = \begin{bmatrix}
+\cos(\theta) & \sin(\theta) \\ -\sin(\theta) & \cos(\theta)
+\end{bmatrix} \begin{bmatrix}
+-g \\ \ddot{x}
+\end{bmatrix} + \begin{bmatrix}
+-\omega^2 r \\ \alpha r
+\end{bmatrix}
+\end{equation}
+
+This implies a measurement of angular velocity,
+
+\begin{equation}
+\omega = \sqrt{\frac{1}{r}(a_{r1}-a_{r2})}
+\end{equation}
+
+
+\subsection{Measurement of $\alpha$}
+\ \\ \ \\
+$\alpha$, the angular acceleration of the platform, can be calculated using the same technique as $\omega$. 
+
+\begin{equation}
+\alpha = \frac{\alpha_{\theta_1}-\alpha_{\theta_2}}{r}
+\end{equation}
+
+\subsection{Measurement of $v$}
+\ \\ \ \\
+$v$, the velocity of the segway over the ground, can be calculated using a combination of the encoder data and our measurement of the angular velocity $\omega$. The encoders directly measure the shaft velocity $\omega_s$ of the wheels with respect to the platform. The velocity of the platform is thus simply
+
+$v = r_w(\omega_s - \omega)$
+
+Care has to be taken in using this measurement, given that stepsize in the encoders is 1/100 of a revolution of the wheel. This means that the measurement will not be very accurate at very low ground speeds.
+
+\subsection{Measurement of $\theta$}
+\ \\ \ \\
+$theta$, the angle of the platform perpendicular to the ground perpendicular, is annoyingly hard to find. A first approximation to it can be found by integrating the angular velocity measurements, but this is only valid on short timescales and needs a "reset". We can complement this with a simple low-passed measurement of the angle of acceleration at accelerometer 1. If we find that that is not precise enough for what we need, we can solve the system of equations above for $\theta$, either explicitly or using a second-order polynomial approximation. 
+
+
+\end{document}
