@@ -1,7 +1,6 @@
 import serial
 import datetime
 import time
-import matplotlib.pyplot as plt
 
 ser = serial.Serial('/dev/tty.usbmodem00000001', 9600,timeout = .1)
 data=[]
