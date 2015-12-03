@@ -1,0 +1,8 @@
+import serial
+
+ser = serial.Serial('/dev/tty.usbmodem00000001', 9600,timeout = .1)
+
+while True:
+	print(ser.readline())
+
+ 
