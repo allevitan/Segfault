@@ -19,7 +19,7 @@ void loop()
  if(Wire.available()) // If there are byte, assume there will always be 2
 { 
  data[0] = (int8_t)Wire.read();
- data[0] = (int8_t)Wire.read();
+ data[1] = (int8_t)Wire.read();
  Serial.print(data[0]);Serial.println(data[1]);  // print the data
  }
 delay(1000);

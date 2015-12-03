@@ -2,10 +2,13 @@
 
 byte START_BYTE = 170;
 byte SYREN_ADDR = 128;
-byte CMD_FORWARD = 4;
-byte CMD_BACKWARD = 1;
-byte _cmd = CMD_FORWARD;
-byte _data = 10;
+byte CMD_FORWARD1 = 0;
+byte CMD_BACKWARD1 = 1;
+byte CMD_FORWARD2 = 4;
+byte CMD_BACKWARD2 = 5;
+byte _cmd1 = CMD_BACKWARD1;
+byte _cmd2 = CMD_BACKWARD2;
+byte _data = 20;
 byte _checksum = 0;
 
 // Define variables for interfacing with the x86
@@ -60,9 +63,15 @@ void loop() {
 //      _ledState = !_ledState; 
 //    }
 //  }
-  _checksum = 0x7F & (SYREN_ADDR + _cmd + _data);
+  _checksum = 0x7F & (SYREN_ADDR + _cmd1 + _data);
   Serial1.write(SYREN_ADDR); // send address byte
-  Serial1.write(_cmd);
+  Serial1.write(_cmd1);
+  Serial1.write(_data);
+  Serial1.write(_checksum);
+  
+  _checksum = 0x7F & (SYREN_ADDR + _cmd2 + _data);
+  Serial1.write(SYREN_ADDR); // send address byte
+  Serial1.write(_cmd2);
   Serial1.write(_data);
   Serial1.write(_checksum);
   
