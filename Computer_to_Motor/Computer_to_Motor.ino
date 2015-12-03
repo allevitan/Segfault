@@ -14,7 +14,7 @@ byte _cmd2 = CMD_BACKWARD2;
 byte _data = 0;
 byte _checksum = 0;
 int data;
-
+unsigned long time;
 int8_t encoder[2] = {0, 0};
 // Define variables for interfacing with the x86
 byte _ledState = 0;
@@ -24,7 +24,7 @@ int _indx = 0;
 void setup() {
   Wire.begin(42);
   Serial.begin(9600);
-  establishContact();
+ // establishContact();
   
   Serial1.begin(9600);
   delay(3000); // allow motor controller to boot
@@ -40,22 +40,33 @@ void loop() {
     if (Serial.available() > 0) { 
     data = Serial.parseInt();
     _data=(byte) data;
-    Serial.println(_data);
-    
-    
-_checksum = 0x7F & (SYREN_ADDR + _cmd1 + _data);
+    //Serial.println(_data);
+    _checksum = 0x7F & (SYREN_ADDR + _cmd1 + _data); //Right Shark
 Serial1.write(SYREN_ADDR); // send address byte
  Serial1.write(_cmd1);
 Serial1.write(_data);
 Serial1.write(_checksum);
   
- _checksum = 0x7F & (SYREN_ADDR + _cmd2 + _data);
+ _checksum = 0x7F & (SYREN_ADDR + _cmd2 + _data); // Left Shark
 Serial1.write(SYREN_ADDR); // send address byte
 Serial1.write(_cmd2);
  Serial1.write(_data);
 Serial1.write(_checksum);
-    }  
-  delay(100);
+
+    }
+ time = millis();
+Serial.print(time);
+Serial.print(",");
+Serial.print(_data);
+Serial.print(",");
+Serial.print(encoder[0]); // Right Shark
+Serial.print(",");
+Serial.println(encoder[1]); // Left Shark
+
+
+
+     
+delay(50);
   
   Wire.requestFrom(43, 2);    // request 2 bytes from slave device #43
   if(Wire.available())    
@@ -64,9 +75,11 @@ Serial1.write(_checksum);
     encoder[1] = (int8_t) Wire.read();    
    }
  
-     Serial.print("Motor 1: "); Serial.println(encoder[0]);
-   Serial.print("Motor 2: "); Serial.println(encoder[1]);
-   Serial.println("----");
+//   Serial.print("Right Shark: "); Serial.println(encoder[0]);
+//   Serial.print("Left Shark: "); Serial.println(encoder[1]);
+//   Serial.println("----");
+
+
 }
 void establishContact() {
   while (Serial.available() <= 0) {

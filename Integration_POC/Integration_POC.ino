@@ -77,7 +77,7 @@ void loop()
   if (var > 0) {cmd=CMD_FORWARD;}
   if (var < 0) {cmd=CMD_BACKWARD; var=var*-1;}
   var=var/5000;
-  if (speed > 25) {speed=25;}
+  if (var > 10) {var=10;}
   speed= (byte) var;
   //Serial.println("Did Math");
   
