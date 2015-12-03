@@ -41,11 +41,15 @@ const bool QUADRATURE = true;
 
 const int MASTER_ADDR = 42;
 const int MY_ADDR = 43;
+const int DEBOUNCE_MICROS = 100;
 
 const int E1_PIN1 = 2;
 const int E1_PIN2 = 4;
 const int E2_PIN1 = 3;
 const int E2_PIN2 = 5;
+
+static unsigned long last_interrupt_time_1 = 0;
+static unsigned long last_interrupt_time_2 = 0;
 
 const int LOOPTIME = 50; //Time for each counting period, in ms
 
@@ -60,23 +64,39 @@ byte tosend[2] = {0, 0};
 
 //Quadrature
 void E1_ISR_Q(){
+  if (micros() - last_interrupt_time_1 > DEBOUNCE_MICROS) 
+ {
   E1Steps += (isHigh(E1_PIN1) != isHigh(E1_PIN2))*2-1;
+ }
+ last_interrupt_time_1 = micros();
 }
 
 //Birature
 void E1_ISR_B(){
-  E1Steps += 1;
+ if (micros() - last_interrupt_time_1 > DEBOUNCE_MICROS) 
+ {
+   E1Steps += 1;
+ }
+ last_interrupt_time_1 = micros();
 }
 
 
 //Quadrature
 void E2_ISR_Q(){
+ if (micros() - last_interrupt_time_2 > DEBOUNCE_MICROS) 
+ {
   E2Steps += (isHigh(E2_PIN1) != isHigh(E2_PIN2))*2-1;
+  }
+ last_interrupt_time_2 = micros();
 }
 
 //Birature
 void E2_ISR_B(){
-  E2Steps += 1;
+ if (micros() - last_interrupt_time_2 > DEBOUNCE_MICROS) 
+ {
+   E2Steps += 1;
+ }
+ last_interrupt_time_2 = micros();
 }
 
 
@@ -113,9 +133,9 @@ void loop() {
     tosend[1]=byte(E2StepsOut);
 
     // Comment this out in "production", leave in for early debugging
-    //Serial.print(E1StepsOut);
-    //Serial.print(',');
-    //Serial.println(E2StepsOut);
+    // Serial.print(E1StepsOut);
+    // Serial.print(',');
+    // Serial.println(E2StepsOut);
   }
 
 }
