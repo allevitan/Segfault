@@ -12,7 +12,11 @@ int16_t gx1, gy1, gz1;
 
 int16_t ax2, ay2, az2;
 int16_t gx2, gy2, gz2;
+float angle;
 int filt;
+
+long time = 0;
+long dt = 50;
 
 #define LED_PIN RED_LED
 bool blinkState = false;
@@ -41,11 +45,17 @@ void setup() {
  accelgyro2.setFullScaleGyroRange(1); //pm 500
  accelgyro2.setFullScaleAccelRange(1); //pm 4g
     
+    time = millis();
+    accelgyro1.getMotion6(&ax1, &ay1, &az1, &gx1, &gy1, &gz1);
+    angle = atan2(ax1,ay1)*180/3.141;
     
     
 }
 
 void loop() {
+  
+  if (millis() - time > dt){
+    time = millis();
   
     // read raw accel/gyro measurements from device
     accelgyro1.getMotion6(&ax1, &ay1, &az1, &gx1, &gy1, &gz1);
@@ -56,22 +66,24 @@ void loop() {
 
     // display tab-separated accel/gyro x/y/z values
     
-    Serial.print("a/g:\t");
-    Serial.print(ax1); Serial.print("\t");
-    Serial.print(ay1); Serial.print("\t");
-    Serial.print(az1); Serial.print("\t");
-    Serial.print(gx1); Serial.print("\t");
-    Serial.print(gy1); Serial.print("\t");
-    Serial.print(gz1);Serial.print("\t");
-    Serial.print(ax2); Serial.print("\t");
-    Serial.print(ay2); Serial.print("\t");
-    Serial.print(az2); Serial.print("\t");
-    Serial.print(gx2); Serial.print("\t");
-    Serial.print(gy2); Serial.print("\t");
-    Serial.println(gz2);
+//    Serial.print("a/g:\t");
+//    Serial.print(ax1); Serial.print("\t");
+//    Serial.print(ay1); Serial.print("\t");
+//    Serial.print(az1); Serial.print("\t");
+//    Serial.print(gx1); Serial.print("\t");
+//    Serial.print(gy1); Serial.print("\t");
+//    Serial.print(gz1);Serial.print("\t");
+//    Serial.print(ax2); Serial.print("\t");
+//    Serial.print(ay2); Serial.print("\t");
+//    Serial.print(az2); Serial.print("\t");
+//    Serial.print(gx2); Serial.print("\t");
+//    Serial.print(gy2); Serial.print("\t");
+//    Serial.println(gz2);
+    angle = 0.98 * (angle + (gz1+67)*((float)dt/65000)) + 0.02 * atan2(ax1,ay1)*180/3.1415;
+    Serial.println(angle);
     blinkState = !blinkState;
     digitalWrite(LED_PIN, blinkState);
 //    delay(40);
     // blink LED to indicate activity
-
+  }
 }

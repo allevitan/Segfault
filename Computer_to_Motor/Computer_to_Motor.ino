@@ -14,7 +14,7 @@ byte _cmd2 = CMD_BACKWARD2;
 byte _data = 0;
 byte _checksum = 0;
 int data;
-unsigned long time;
+volatile unsigned long time;
 int8_t encoder[2] = {0, 0};
 // Define variables for interfacing with the x86
 byte _ledState = 0;
@@ -66,7 +66,7 @@ Serial.println(encoder[1]); // Left Shark
 
 
      
-delay(50);
+delay(1);
   
   Wire.requestFrom(43, 2);    // request 2 bytes from slave device #43
   if(Wire.available())    

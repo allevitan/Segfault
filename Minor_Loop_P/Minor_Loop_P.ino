@@ -14,12 +14,21 @@ byte _cmd2 = CMD_FORWARD2;
 byte _data = 0;
 byte _checksum = 0;
 int data;
-byte encoder_set = 3;
+byte encoder_set = 5;
 float RSerr;
 float LSerr;
 byte RSset=0;
 byte LSset=0;
-float k=.8;
+int pRS=0; // the p control value for Right Shark
+int pLS=0; // the p control value for Left Shark
+int iRS=0; // the i control value for Left Shark
+int iLS=0; // the i control value for Left Shark
+float pk=1;
+float ik=1;
+long int loop_start=0;
+long int loop_endt=0;
+long last_loop = 0;
+int loop_time = 20;
 
 volatile unsigned long time;
 int8_t encoder[2] = {0, 0};
@@ -40,14 +49,18 @@ void setup() {
   Serial1.write(START_BYTE); // set the baud rate
   
   pinMode(LED_PIN, OUTPUT);  // enable LED
+  last_loop = millis();
 }
 
 void loop() {
+if (millis()-last_loop > loop_time)
+{
+  last_loop = millis();
   
-    if (Serial.available() > 0) { 
-    data = Serial.parseInt();
-    encoder_set=(byte) data;
-    }
+//    if (Serial.available() > 0) { 
+//    data = Serial.parseInt();
+//    encoder_set=(byte) data;
+//    }
 _checksum = 0x7F & (SYREN_ADDR + _cmd1 + RSset); //Right Shark
 Serial1.write(SYREN_ADDR); // send address byte
 Serial1.write(_cmd1);
@@ -70,7 +83,7 @@ Serial1.write(_checksum);
 //Serial.print(",");
 //Serial.println(encoder[1]); // Left Shark
      
-delay(1);
+//delay(1);
   
   Wire.requestFrom(43, 2);    // request 2 bytes from slave device #43
   if(Wire.available())    
@@ -81,19 +94,26 @@ delay(1);
 RSerr=encoder_set-encoder[0];
 LSerr=encoder_set-encoder[1];
 
-RSset=RSset+(RSerr*k*1.4172);
-LSset=LSset+(LSerr*k*1.377);
+pRS = RSerr*pk;
+pLS = LSerr*pk;
+
+iRS += min(RSerr*ik,50); //saturate the I signal at 50
+iLS += min(LSerr*ik,50); //saturate the I signal at 50
+
+RSset= max(min(pRS + iRS,255),0); // saturate control signal to avoid rollover
+LSset= max(min(pLS + iLS,255),0); // saturate control signal to avoid rollover
 
 RSset=(byte) RSset;
 LSset=(byte) LSset;
 
-if (RSset > 20) {RSset=20;}
-if (LSset > 20) {LSset=20;}
-Serial.print("Speed Set: "); Serial.println(encoder_set);
+if (RSset > 30) {RSset=30;}
+if (LSset > 30) {LSset=30;}
+//Serial.print("Speed Set: "); Serial.println(encoder_set);
 Serial.print("Right Shark Speed Set: "); Serial.print(RSset); Serial.print(" Speed: "); Serial.print(encoder[0]); Serial.print(" Err: "); Serial.println(RSerr);
 Serial.print("Left Shark Speed Set: "); Serial.print(LSset); Serial.print(" Speed: "); Serial.print(encoder[1]); Serial.print(" Err: "); Serial.println(LSerr);
-Serial.println("----");
+//Serial.println("----");
 
+}
 
 }
 void establishContact() {

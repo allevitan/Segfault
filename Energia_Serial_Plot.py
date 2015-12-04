@@ -50,14 +50,14 @@ print speed_steps
 print RS_avg
 
 
-# plt.plot(time,RS,'x')
-# plt.plot(time,LS,'x')
+# plt.plot(time,RS)
+# plt.plot(time,LS)
 # plt.show()
 
 # plt.plot(speed,RS,'x')
 # plt.plot(speed,LS,'x')
 # plt.show()
 
-plt.plot(speed_steps,RS_avg,'x')
-plt.plot(speed_steps,LS_avg,'x')
+plt.plot(speed_steps,RS_avg, 'g')
+plt.plot(speed_steps,LS_avg,'r')
 plt.show()
