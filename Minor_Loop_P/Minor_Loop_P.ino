@@ -14,7 +14,7 @@ byte _cmd2 = CMD_FORWARD2;
 byte _data = 0;
 byte _checksum = 0;
 int data;
-byte encoder_set = 5;
+byte encoder_set = 4;
 float RSerr;
 float LSerr;
 byte RSset=0;
@@ -23,7 +23,7 @@ int pRS=0; // the p control value for Right Shark
 int pLS=0; // the p control value for Left Shark
 int iRS=0; // the i control value for Left Shark
 int iLS=0; // the i control value for Left Shark
-float pk=1;
+float pk=1.3;
 float ik=1;
 long int loop_start=0;
 long int loop_endt=0;
@@ -97,8 +97,8 @@ LSerr=encoder_set-encoder[1];
 pRS = RSerr*pk;
 pLS = LSerr*pk;
 
-iRS += min(RSerr*ik,50); //saturate the I signal at 50
-iLS += min(LSerr*ik,50); //saturate the I signal at 50
+iRS = min(iRS + RSerr*ik,50); //saturate the I signal at 50
+iLS = min(iLS + LSerr*ik,50); //saturate the I signal at 50
 
 RSset= max(min(pRS + iRS,255),0); // saturate control signal to avoid rollover
 LSset= max(min(pLS + iLS,255),0); // saturate control signal to avoid rollover
@@ -109,8 +109,8 @@ LSset=(byte) LSset;
 if (RSset > 30) {RSset=30;}
 if (LSset > 30) {LSset=30;}
 //Serial.print("Speed Set: "); Serial.println(encoder_set);
-Serial.print("Right Shark Speed Set: "); Serial.print(RSset); Serial.print(" Speed: "); Serial.print(encoder[0]); Serial.print(" Err: "); Serial.println(RSerr);
-Serial.print("Left Shark Speed Set: "); Serial.print(LSset); Serial.print(" Speed: "); Serial.print(encoder[1]); Serial.print(" Err: "); Serial.println(LSerr);
+//Serial.print("Right Shark Speed Set: "); Serial.print(RSset); Serial.print(" Speed: "); Serial.print(encoder[0]); Serial.print(" Err: "); Serial.println(RSerr);
+//Serial.print("Left Shark Speed Set: "); Serial.print(LSset); Serial.print(" Speed: "); Serial.print(encoder[1]); Serial.print(" Err: "); Serial.println(LSerr);
 //Serial.println("----");
 
 }
