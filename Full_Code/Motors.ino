@@ -14,7 +14,7 @@ void prepSabretooth(){
   Serial.println("Sabretooth Communication Initialized");
 }
 
-void driveMotor1(int8_t data){
+void driveMotorRS(int8_t data){
   if (data >= 0){
     Serial1.write(SYREN_ADDR); // send address byte
     Serial1.write(CMD_FORWARD1);
@@ -28,7 +28,7 @@ void driveMotor1(int8_t data){
   }
 }
 
-void driveMotor2(int8_t data){
+void driveMotorLS(int8_t data){
   if (data >= 0){
     Serial1.write(SYREN_ADDR); // send address byte
     Serial1.write(CMD_FORWARD2);

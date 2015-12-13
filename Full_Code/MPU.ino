@@ -3,13 +3,13 @@
 MPU6050 accelgyro1(MPU6050_ADDRESS_AD0_LOW);
 MPU6050 accelgyro2(MPU6050_ADDRESS_AD0_HIGH);
 
-int gz1_offset = 77;
+int gz1_offset = 88;
 
 void prepMPUs()
 {
   Serial.println("Initializing MPUs...");
   accelgyro1.initialize();
-  accelgyro2.initialize();
+  //accelgyro2.initialize();
   Serial.println("Testing device connections...");
   Serial.println(accelgyro1.testConnection() ? "MPU6050 A connection successful" : "MPU6050 A connection failed");
   Serial.println(accelgyro2.testConnection() ? "MPU6050 B connection successful" : "MPU6050 B connection failed");
@@ -45,12 +45,12 @@ void collectMPUData(){
   accelgyro2.getMotion6(&ax2, &ay2, &az2, &gx2, &gy2, &gz2);
 
   if (FLIPPED) {
-    omega = -((float)(gz1+gz1_offset)/65); //radians per second
+    omega = -float(gz1+gz1_offset)/65; //radians per second
     theta = 0.98 * (theta + omega*((float)dt)/1000) + 0.02 * -atan2(ax1,ay1)*180/3.1415;
     theta_a = -atan2(ax1,ay1)*180/3.1415; // Just accelerometer part
     theta_g = (theta_g + omega*((float)dt)/1000); // Just gyro part
   } else { 
-    omega = -((float)(gz1+gz1_offset)/65); //radians per second
+    omega = -float(gz1+gz1_offset)/65; //radians per second
     theta = 0.98 * (theta + omega*((float)dt)/1000) + 0.02 * -atan2(-ax1,-ay1)*180/3.1415;
     theta_a = -atan2(-ax1,-ay1)*180/3.1415; // Just accelerometer part
     theta_g = (theta_g + omega*((float)dt)/1000); // Just gyro part
