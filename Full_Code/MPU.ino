@@ -26,9 +26,13 @@ void prepMPUs()
   
   collectMPUData(); //Populate the data
   if (FLIPPED) {
-    theta = -atan2(ax1,ay1)*180/3.1415;
+    theta_a = -atan2(ax1,ay1)*180/3.1415;
+    theta_g = theta_a;
+    theta = theta_a;
   } else{
-    theta = -atan2(-ax1,-ay2)*180/3.1415; // Initialize the angle
+    theta_a = -atan2(-ax1,-ay2)*180/3.1415; // Initialize the angle
+    theta_g = theta_a;
+    theta = theta_a;
   }
   
   Serial.println("MPUs Initialized");
@@ -43,13 +47,13 @@ void collectMPUData(){
   if (FLIPPED) {
     omega = -((float)(gz1+gz1_offset)/65); //radians per second
     theta = 0.98 * (theta + omega*((float)dt)/1000) + 0.02 * -atan2(ax1,ay1)*180/3.1415;
-    //theta_a = -atan2(ax1,ay1)*180/3.1415; // Just accelerometer part
-    //theta_g = (theta_g + omega*((float)dt)/1000); // Just gyro part
+    theta_a = -atan2(ax1,ay1)*180/3.1415; // Just accelerometer part
+    theta_g = (theta_g + omega*((float)dt)/1000); // Just gyro part
   } else { 
     omega = -((float)(gz1+gz1_offset)/65); //radians per second
     theta = 0.98 * (theta + omega*((float)dt)/1000) + 0.02 * -atan2(-ax1,-ay1)*180/3.1415;
-    //theta_a = -atan2(-ax1,-ay1)*180/3.1415; // Just accelerometer part
-    //theta_g = (theta_g + omega*((float)dt)/1000); // Just gyro part
+    theta_a = -atan2(-ax1,-ay1)*180/3.1415; // Just accelerometer part
+    theta_g = (theta_g + omega*((float)dt)/1000); // Just gyro part
   }
 }
 
