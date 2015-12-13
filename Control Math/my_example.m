@@ -18,12 +18,12 @@ s = tf('s');
 
 Kv = 10;
 
-VctoWs = minreal(VtoWs/ (1+Kv*VtoWs));
-VctoU = minreal(VtoU/ (1+Kv*VtoWs));
-VctoTheta = minreal(VtoTheta/ (1+Kv*VtoWs));
+VctoWs = minreal(VtoWs / (1+Kv*VtoWs)); 
+VctoU = minreal(VtoU / (1+Kv*VtoWs));
+VctoTheta = minreal(VtoTheta / (1+Kv*VtoWs));
 
 Compensator = (s+3)/s;
-%rlocus(Compensator*-VctoTheta);
+rlocus(Compensator*-VctoTheta);
 
 Kloop = 100;
 
