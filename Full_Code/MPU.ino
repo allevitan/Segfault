@@ -8,16 +8,16 @@ int gz1_offset = 88;
 void prepMPUs()
 {
   Serial.println("Initializing MPUs...");
-  accelgyro1.initialize();
-  //accelgyro2.initialize();
+  //accelgyro1.initialize();
+  accelgyro2.initialize();
   Serial.println("Testing device connections...");
-  Serial.println(accelgyro1.testConnection() ? "MPU6050 A connection successful" : "MPU6050 A connection failed");
+  //Serial.println(accelgyro1.testConnection() ? "MPU6050 A connection successful" : "MPU6050 A connection failed");
   Serial.println(accelgyro2.testConnection() ? "MPU6050 B connection successful" : "MPU6050 B connection failed");
    
-  accelgyro1.setRate(0);
-  accelgyro1.setDLPFMode(1); //BW 184
-  accelgyro1.setFullScaleGyroRange(1); //pm 500
-  accelgyro1.setFullScaleAccelRange(1); //pm 4g
+  //accelgyro1.setRate(0);
+  //accelgyro1.setDLPFMode(1); //BW 184
+  //accelgyro1.setFullScaleGyroRange(1); //pm 500
+  //accelgyro1.setFullScaleAccelRange(1); //pm 4g
  
   accelgyro2.setRate(0);
   accelgyro2.setDLPFMode(1); //BW 184
@@ -41,8 +41,8 @@ void prepMPUs()
 
 // Collects the MPU data and updates the angle guess.
 void collectMPUData(){
-  accelgyro1.getMotion6(&ax1, &ay1, &az1, &gx1, &gy1, &gz1);
-  accelgyro2.getMotion6(&ax2, &ay2, &az2, &gx2, &gy2, &gz2);
+  accelgyro2.getMotion6(&ax1, &ay1, &az1, &gx1, &gy1, &gz1);
+  //accelgyro2.getMotion6(&ax2, &ay2, &az2, &gx2, &gy2, &gz2);
 
   if (FLIPPED) {
     omega = -float(gz1+gz1_offset)/65; //radians per second
