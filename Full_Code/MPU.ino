@@ -1,11 +1,13 @@
-
-#include "MPU6050.h"
+#include <MPU6050.h>
 
 MPU6050 accelgyro1(MPU6050_ADDRESS_AD0_LOW);
 MPU6050 accelgyro2(MPU6050_ADDRESS_AD0_HIGH);
 
+int gz1_offset = 77;
+
 void prepMPUs()
 {
+  Serial.println("Initializing MPUs...");
   accelgyro1.initialize();
   accelgyro2.initialize();
   Serial.println("Testing device connections...");
@@ -23,7 +25,11 @@ void prepMPUs()
   accelgyro2.setFullScaleAccelRange(1); //pm 4g
   
   collectMPUData(); //Populate the data
-  theta = atan2(-ax1,-ay2)*180/3.1415; // Initialize the angle
+  if (FLIPPED) {
+    theta = -atan2(ax1,ay1)*180/3.1415;
+  } else{
+    theta = -atan2(-ax1,-ay2)*180/3.1415; // Initialize the angle
+  }
   
   Serial.println("MPUs Initialized");
 }
@@ -33,17 +39,18 @@ void prepMPUs()
 void collectMPUData(){
   accelgyro1.getMotion6(&ax1, &ay1, &az1, &gx1, &gy1, &gz1);
   accelgyro2.getMotion6(&ax2, &ay2, &az2, &gx2, &gy2, &gz2);
+
   if (FLIPPED) {
-    omega = ((float)(gz1+68)/65); //radians per second
-    theta = 0.98 * (theta + omega*((float)dt)/1000) + 0.02 * atan2(ax1,ay1)*180/3.1415;
-    //theta = atan2(ax1,ay1)*180/3.1415; // Just accelerometer part
-    //theta = (theta + omega*((float)dt)/1000); // Just gyro part
+    omega = -((float)(gz1+gz1_offset)/65); //radians per second
+    theta = 0.98 * (theta + omega*((float)dt)/1000) + 0.02 * -atan2(ax1,ay1)*180/3.1415;
+    //theta_a = -atan2(ax1,ay1)*180/3.1415; // Just accelerometer part
+    //theta_g = (theta_g + omega*((float)dt)/1000); // Just gyro part
   } else { 
-    omega = -((float)(gz1+68)/65); //radians per second
+    omega = -((float)(gz1+gz1_offset)/65); //radians per second
     theta = 0.98 * (theta + omega*((float)dt)/1000) + 0.02 * -atan2(-ax1,-ay1)*180/3.1415;
-    //theta = -atan2(-ax1,-ay1)*180/3.1415; // Just accelerometer part
-    //theta = (theta + omega*((float)dt)/1000); // Just gyro part
-  } 
+    //theta_a = -atan2(-ax1,-ay1)*180/3.1415; // Just accelerometer part
+    //theta_g = (theta_g + omega*((float)dt)/1000); // Just gyro part
+  }
 }
 
 
