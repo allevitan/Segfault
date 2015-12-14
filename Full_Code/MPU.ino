@@ -30,7 +30,7 @@ void prepMPUs()
     theta_g = theta_a;
     theta = theta_a;
   } else{
-    theta_a = -atan2(-ax1,-ay2)*180/3.1415; // Initialize the angle
+    theta_a = -atan2(-ax1,-ay1)*180/3.1415; // Initialize the angle
     theta_g = theta_a;
     theta = theta_a;
   }
