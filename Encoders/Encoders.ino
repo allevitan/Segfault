@@ -15,6 +15,8 @@
 
 
 #include <Wire.h>
+#include <TimerOne.h>
+
 
 // More than we need, but basically a set of high-speed read and
 // write operations
@@ -64,40 +66,24 @@ byte tosend[2] = {0, 0};
 
 //Quadrature
 void E1_ISR_Q(){
-  if (micros() - last_interrupt_time_1 > DEBOUNCE_MICROS) 
- {
   E1Steps -= (isHigh(E1_PIN1) != isHigh(E1_PIN2))*2-1;
- }
- last_interrupt_time_1 = micros();
 }
 
 //Birature
 void E1_ISR_B(){
- if (micros() - last_interrupt_time_1 > DEBOUNCE_MICROS) 
- {
    E1Steps += 1;
- }
- last_interrupt_time_1 = micros();
 }
 
 
 //Quadrature
 void E2_ISR_Q(){
- if (micros() - last_interrupt_time_2 > DEBOUNCE_MICROS) 
- {
   // This one is flipped because the encoder is backward
   E2Steps += (isHigh(E2_PIN1) != isHigh(E2_PIN2))*2-1;
-  }
- last_interrupt_time_2 = micros();
 }
 
 //Birature
 void E2_ISR_B(){
- if (micros() - last_interrupt_time_2 > DEBOUNCE_MICROS) 
- {
    E2Steps += 1;
- }
- last_interrupt_time_2 = micros();
 }
 
 
@@ -125,30 +111,28 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(E2_PIN1), E2_ISR_B, CHANGE);
   }
   lastTime = millis();
+
+  Timer1.initialize(20000);         // initialize timer1, and set a 20 ms period
+  Timer1.attachInterrupt(countStuff);  // attaches callback() as a timer overflow interrupt
 }
 
-void loop() {
+void loop(){}
 
-  // This does the counting work
-  if (millis() - lastTime > LOOPTIME){
-    lastTime = millis();
-    E1StepsOut = constrain(E1Steps,-32767,32767);
-    E2StepsOut = constrain(E2Steps,-32767,32767);
-    E1Steps = 0;
-    E2Steps = 0;
+void countStuff(){
+  E1StepsOut = constrain(E1Steps,-32767,32767);
+  E2StepsOut = constrain(E2Steps,-32767,32767);
+  E1Steps = 0;
+  E2Steps = 0;
 
-    // Comment this out in "production", leave in for early debugging
-    //Serial.print(E1StepsOut);
-    //Serial.print(',');
-    //Serial.println(E2StepsOut);
-  }
-
+  tosend[0] = byte(E1StepsOut);
+  tosend[1] = byte(E1StepsOut>>8);
+  tosend[2] = byte(E2StepsOut);
+  tosend[3] = byte(E2StepsOut>>8);
+  Serial.print(E1StepsOut);
+  Serial.print(',');
+  Serial.println(E2StepsOut);
 }
 
 void requestEvent(){
-  tosend[0] = byte(E1Steps);
-  tosend[1] = byte(E1Steps>>8);
-  tosend[2] = byte(E2Steps);
-  tosend[3] = byte(E2Steps>>8);
   Wire.write(tosend,4);
 }

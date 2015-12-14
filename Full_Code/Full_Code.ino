@@ -6,7 +6,7 @@
 //#include <SoftwareSerial.h>
 //SoftwareSerial Serial1(10, 11); // RX, TX
 
-const int dt = 5; // timescale of the entire control loop
+const int dt = 20; // timescale of the entire control loop
 long tlast, tcur; // used to help time the main loop.
 
 const bool FLIPPED = true;
@@ -25,14 +25,13 @@ float encoder_RS = 0;
 float encoder_LS = 0;
 
 // Control Parameters
-const float kv = 1; // in volts per radian
+const float kv = 0.5; // in volts per radian
 const float kv_converted = kv * float(127)/24; // In steps per radian
 float omega_error;
 
 void setup()
 { 
   Wire.begin();
-  Wire.setTimeout(100);
   Serial.begin(9600);
   delay(50);
   Serial.println("Serial Initialized");
@@ -48,23 +47,16 @@ void loop()
   tcur = millis();
   if (tcur-tlast > dt){
     tlast = tcur;
-    //collectEncoderData();
-//    Serial.print(encoder_RS);
-//    Serial.print(',');
-//    Serial.println(encoder_LS);
+    collectEncoderData();
+    Serial.print(encoder_RS);
+    Serial.print(',');
+    Serial.println(encoder_LS);
     collectMPUData();
-//    Serial.print(theta_a);
-//    Serial.print(",");
-//    Serial.print(theta_g);
-//    Serial.print(",");
-//    Serial.println(theta);
+    //Serial.println(theta);
     driveMotorRS((int8_t)theta);
     driveMotorLS((int8_t)theta);
-    //VelocityControlMotorRS(float(theta/5));
-    //VelocityControlMotorLS(float(theta/5));
-    digitalWrite(13,HIGH);
-    delay(1);
-    digitalWrite(13,LOW);
+    //VelocityControlMotorRS(float(8));
+    //VelocityControlMotorLS(float(8));
   }
 }
 
