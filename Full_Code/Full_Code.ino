@@ -32,6 +32,7 @@ float omega_error;
 void setup()
 { 
   Wire.begin();
+  Wire.setTimeout(100);
   Serial.begin(9600);
   delay(50);
   Serial.println("Serial Initialized");
