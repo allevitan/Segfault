@@ -3,7 +3,7 @@ const float ENCODER_LOOPTIME = 0.02;
 const float ENCODER_CONVFACTOR = 6.283185307 / 1200 / ENCODER_LOOPTIME / 5 ;
 
 void collectEncoderData(){
-  Wire.requestFrom(ENCODER_ADDR, 8);    // request 8 bytes from slave device
+  Wire.requestFrom(ENCODER_ADDR, 4);    // request 8 bytes from slave device
   while(!Wire.available()){};
   raw_encoder_data[0] = Wire.read();
   raw_encoder_data[0] += Wire.read() << 8;

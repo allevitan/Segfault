@@ -25,7 +25,7 @@ float encoder_RS = 0;
 float encoder_LS = 0;
 
 // Control Parameters
-const float kv = 1.5; // in volts per radian
+const float kv = 0.5; // in volts per radian
 const float kv_converted = kv * float(127)/24; // In steps per radian
 float omega_error;
 
@@ -51,12 +51,12 @@ void loop()
     Serial.print(encoder_RS);
     Serial.print(',');
     Serial.println(encoder_LS);
-    //collectMPUData();
+    collectMPUData();
     //Serial.println(theta);
-    //driveMotorRS((int8_t)theta);
-    //driveMotorLS((int8_t)theta);
-    VelocityControlMotorRS(float(8));
-    VelocityControlMotorLS(float(8));
+    driveMotorRS((int8_t)theta);
+    driveMotorLS((int8_t)theta);
+    //VelocityControlMotorRS(float(8));
+    //VelocityControlMotorLS(float(8));
   }
 }
 
