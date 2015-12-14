@@ -7,11 +7,11 @@ byte CMD_BACKWARD2 = 5;
 
 
 void prepSabretooth(){
-  Serial.println("Initializing Sabretooth Communication...");
+//  Serial.println("Initializing Sabretooth Communication...");
   Serial1.begin(9600);
   delay(3000);
   Serial1.write(START_BYTE); // set the baud rate 
-  Serial.println("Sabretooth Communication Initialized");
+//  Serial.println("Sabretooth Communication Initialized");
 }
 
 void driveMotorRS(int8_t data){
