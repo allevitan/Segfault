@@ -138,9 +138,9 @@ void loop() {
     E2Steps = 0;
 
     // Comment this out in "production", leave in for early debugging
-    Serial.print(E1StepsOut);
-    Serial.print(',');
-    Serial.println(E2StepsOut);
+    //Serial.print(E1StepsOut);
+    //Serial.print(',');
+    //Serial.println(E2StepsOut);
   }
 
 }

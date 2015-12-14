@@ -47,23 +47,16 @@ void loop()
   tcur = millis();
   if (tcur-tlast > dt){
     tlast = tcur;
-    //collectEncoderData();
+    collectEncoderData();
     Serial.print(encoder_RS);
     Serial.print(',');
     Serial.println(encoder_LS);
-    collectMPUData();
-//    Serial.print(theta_a);
-//    Serial.print(",");
-//    Serial.print(theta_g);
-//    Serial.print(",");
-    Serial.println(theta);
-    driveMotorRS((int8_t)theta);
-    driveMotorLS((int8_t)theta);
-    //VelocityControlMotorRS(float(theta/5));
-    //VelocityControlMotorLS(float(theta/5));
-    digitalWrite(13,HIGH);
-    delay(1);
-    digitalWrite(13,LOW);
+    //collectMPUData();
+    //Serial.println(theta);
+    //driveMotorRS((int8_t)theta);
+    //driveMotorLS((int8_t)theta);
+    VelocityControlMotorRS(float(8));
+    VelocityControlMotorLS(float(8));
   }
 }
 
