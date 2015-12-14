@@ -51,7 +51,7 @@ const int E2_PIN2 = 5;
 static unsigned long last_interrupt_time_1 = 0;
 static unsigned long last_interrupt_time_2 = 0;
 
-const int LOOPTIME = 5; //Time for each counting period, in ms
+const int LOOPTIME = 20; //Time for each counting period, in ms
 
 volatile int E1Steps = 0;
 volatile int E2Steps = 0;
@@ -132,22 +132,23 @@ void loop() {
   // This does the counting work
   if (millis() - lastTime > LOOPTIME){
     lastTime = millis();
-    E1StepsOut = max(-127,min(127,E1Steps));
-    E2StepsOut = max(-127,min(127,E2Steps));
+    E1StepsOut = constrain(E1Steps,-32767,32767);
+    E2StepsOut = constrain(E2Steps,-32767,32767);
     E1Steps = 0;
     E2Steps = 0;
 
-    tosend[0]=byte((int8_t)E1StepsOut);
-    tosend[1]=byte((int8_t)E2StepsOut);
-
     // Comment this out in "production", leave in for early debugging
-    Serial.print(tosend[0]);//E1StepsOut);
-    Serial.print(',');
-    Serial.println(tosend[0]);//E2StepsOut);
+    //Serial.print(E1StepsOut);
+    //Serial.print(',');
+    //Serial.println(E2StepsOut);
   }
 
 }
 
 void requestEvent(){
-  Wire.write(tosend,2);
+  tosend[0] = byte(E1Steps);
+  tosend[1] = byte(E1Steps>>8);
+  tosend[2] = byte(E2Steps);
+  tosend[3] = byte(E2Steps>>8);
+  Wire.write(tosend,4);
 }
