@@ -9,7 +9,7 @@
 const int dt = 20; // timescale of the entire control loop
 long tlast, tcur; // used to help time the main loop.
 
-const bool FLIPPED = true;
+const bool FLIPPED = false;
 
 // MPU Variables
 int16_t ax1, ay1, az1;

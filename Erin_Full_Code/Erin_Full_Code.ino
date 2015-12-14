@@ -7,7 +7,7 @@
 //#include <SoftwareSerial.h>
 //SoftwareSerial Serial1(10, 11); // RX, TX
 
-const bool FLIPPED = true;
+const bool FLIPPED = false;
 bool go=true;
 // MPU Variables
 int16_t ax1, ay1, az1;
@@ -24,7 +24,7 @@ float encoder_RS = 0;
 float encoder_LS = 0;
 
 // Control Parameters
-const float kv = 1; // in volts per radian
+const float kv = 0.8; // in volts per radian
 const float kv_converted = kv * float(127)/24; // In steps per radian
 float omega_error;
 float Vc=0;
@@ -103,15 +103,16 @@ void loop()
 {
 if (go==true){
   go=false;
- collectMPUData();
- collectEncoderData(); 
-// Serial.println(theta_a);
-  Vc=-theta/10;//(-1.03*(theta*(pi/180)))+(0.09703*(thetam1*(pi/180)))+Vcm1;
+  collectMPUData();
+  collectEncoderData();
+  //Serial.println(1.5*theta);
+  Vc=theta*(pi/180)*200;//WORKS
+  //Vc = 1.03*(theta*(pi/180))-(0.09703*(thetam1*(pi/180)))+Vcm1;
   Vc=min(Vc,8);
   Vc=max(Vc,-8);
   thetam1=theta;
   Vcm1=Vc;
-// VelocityControlMotorRS(6); 
-// VelocityControlMotorLS(6);
+  VelocityControlMotorRS(Vc); 
+  VelocityControlMotorLS(Vc);
 } 
 }
