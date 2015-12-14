@@ -6,7 +6,7 @@
 //#include <SoftwareSerial.h>
 //SoftwareSerial Serial1(10, 11); // RX, TX
 
-const int dt = 5; // timescale of the entire control loop
+const int dt = 20; // timescale of the entire control loop
 long tlast, tcur; // used to help time the main loop.
 
 const bool FLIPPED = true;
@@ -25,7 +25,7 @@ float encoder_RS = 0;
 float encoder_LS = 0;
 
 // Control Parameters
-const float kv = 1; // in volts per radian
+const float kv = 1.5; // in volts per radian
 const float kv_converted = kv * float(127)/24; // In steps per radian
 float omega_error;
 
