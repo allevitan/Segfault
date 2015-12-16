@@ -44,7 +44,7 @@ VctoTheta = minreal(Kv*VtoTheta / (1+Kv*VtoWs));
 
 Kloop = 500;
 
-Compensator = 1*(1/2.3*s+1)/((10*s-1))%
+Compensator = 1*(1/2.3*s+1)/((2*s-1))%
 %Compensator = 1*(.2*s+1)*(.5*s+1)/((2*s-1))%b
 %Compensator = 1*(.2*s+1)*(.5*s+1)*(.25*s+1)/((2*s-1))%
 
