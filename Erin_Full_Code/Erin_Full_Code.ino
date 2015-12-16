@@ -83,7 +83,8 @@ if (go==true){
   //Vc=theta*(pi/180)*200;//WORKS
   //Vc = 1.03*(theta*(pi/180))-(0.9703*(thetam1*(pi/180)))+Vcm1;
   //Vc = 15.38*(theta*(pi/180))-(14.62*(thetam1*(pi/180)))+Vcm1;
-  Vc = -27.5*theta + 26.39*thetaml + 1.01*Vcml;
+  
+  Vc = 5*21.74*(theta*(pi/180)) - 5*20.74*(thetam1*(pi/180)) + 1.002*Vcm1;
   
   //Limiting and stuff
 
