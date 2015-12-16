@@ -7,7 +7,7 @@
 //#include <SoftwareSerial.h>
 //SoftwareSerial Serial1(10, 11); // RX, TX
 
-const bool FLIPPED = false;
+const bool FLIPPED = true;
 bool go=true;
 // MPU Variables
 int16_t ax1, ay1, az1;
