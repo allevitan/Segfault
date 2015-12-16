@@ -67,22 +67,25 @@ u = [1,1, zeros(1,length(t)-2)];
 
 figure(1)
 rlocus(system);
+title('Plant Root Locus Plot')
 figure(2);
 rlocus(systemCompL);
+title('Compenstated System Root Locus Plot')
 figure(3);
 pzmap(systemComp);
+title('Closed Loop System Pole-Zero Map')
 figure(4);
 step(systemComp);
 figure(5);
-step(1/(1+systemCompL));
-
-
 lsim(systemComp,u,t,1);
+figure(6);
+margin(systemCompL);
 
 %%
 %convert to z plane
 
 systemZ = c2d(-Kloop*Compensator,.02);
+
 
 
 
