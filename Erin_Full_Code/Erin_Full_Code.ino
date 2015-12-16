@@ -8,7 +8,8 @@
 //SoftwareSerial Serial1(10, 11); // RX, TX
 
 const bool FLIPPED = false;
-volatile bool go=true;
+bool go=true;
+
 // MPU Variables
 int16_t ax1, ay1, az1;
 int16_t gx1, gy1, gz1;
