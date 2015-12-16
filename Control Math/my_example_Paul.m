@@ -5,7 +5,7 @@ mp0 = 10; %kg
 Ip0 = 0.274; %kg*m^2
 
 rp = .5; %m
-mp = 70; %kg
+mp = 70 ; %kg
 Ip = 40; %kg*m^2
 
 
@@ -73,6 +73,8 @@ figure(3);
 pzmap(systemComp);
 figure(4);
 step(systemComp);
+figure(5);
+step(1/(1+systemCompL));
 
 
 lsim(systemComp,u,t,1);
@@ -80,10 +82,8 @@ lsim(systemComp,u,t,1);
 %%
 %convert to z plane
 
-systemZ = c2d(Compensator,.05);
+systemZ = c2d(-Kloop*Compensator,.02);
 
-syms z1;
-subs(systemZ,z,z1);
 
 
 
