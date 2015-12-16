@@ -1,3 +1,4 @@
+clear all
 %These constants are for the segway by itself
 rp0 = .03; %m
 mp0 = 10; %kg
@@ -27,31 +28,62 @@ VctoTheta = minreal(Kv*VtoTheta / (1+Kv*VtoWs));
 
 %pzmap(VctoTheta);
 
-Kv2 = 10;
+%Kv2 = 10;
 
 
 
 
 
-VcctoWs = minreal(Kv2*VctoWs/ (1+Kv2*VctoTheta*s));
-VcctoU = minreal(Kv2*VctoU/ (1+Kv2*VctoTheta*s));
-VcctoTheta = minreal(Kv2*VctoTheta/ (1+Kv2*VctoTheta*s));
+%VcctoWs = minreal(Kv2*VctoWs/ (1+Kv2*VctoTheta*s));
+%VcctoU = minreal(Kv2*VctoU/ (1+Kv2*VctoTheta*s));
+%VcctoTheta = minreal(Kv2*VctoTheta/ (1+Kv2*VctoTheta*s));
 
 %rlocus(VctoTheta*s)
 
-pzmap(VcctoTheta);
+%pzmap(VcctoTheta);
 
-Compensator = (s+3)/(s);
+Kloop = 110;
+
+Compensator = 1*(.5*s+1)/((2*s-1))%
+%Compensator = 1*(.2*s+1)*(.5*s+1)/((2*s-1))%b
+%Compensator = 1*(.2*s+1)*(.5*s+1)*(.25*s+1)/((2*s-1))%
+
+%Compensator = (s+3)/(s);
 %rlocus(-Compensator*VctoTheta);
 
-Kloop = 200;
+
+system = VctoTheta;
+systemPIDL = -VctoTheta;
+systemCompL = -Compensator*VctoTheta;
 
 systemPID = minreal(-Kloop*VctoTheta/(1-Kloop*VctoTheta));
-systemComp = minreal(-Kloop*Compensator*VctoTheta/(1-Kloop*Compensator*VctoTheta));
+systemComp = minreal(Kloop*systemCompL/(1+Kloop*systemCompL));%minreal(-Kloop*Compensator*VctoTheta/(1-Kloop*Compensator*VctoTheta));
 
 %System = minreal(-Kloop*Compensator*VctoTheta/(1-Kloop*Compensator*VctoTheta));
-System = minreal(-Kloop*Compensator*VcctoTheta/(1-Kloop*Compensator*VcctoTheta));
+%System = minreal(-Kloop*Compensator*VcctoTheta/(1-Kloop*Compensator*VcctoTheta));
 
 t = linspace(0,10,1000);
 u = [1,1, zeros(1,length(t)-2)];
-%lsim(System,u,t,1);
+
+figure(1)
+rlocus(system);
+figure(2);
+rlocus(systemCompL);
+figure(3);
+pzmap(systemComp);
+figure(4);
+step(systemComp);
+
+
+lsim(systemComp,u,t,1);
+
+%%
+%convert to z plane
+
+systemZ = c2d(Compensator,.05);
+
+syms z1;
+subs(systemZ,z,z1);
+
+
+
