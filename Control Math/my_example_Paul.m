@@ -42,9 +42,9 @@ VctoTheta = minreal(Kv*VtoTheta / (1+Kv*VtoWs));
 
 %pzmap(VcctoTheta);
 
-Kloop = 110;
+Kloop = 500;
 
-Compensator = 1*(.5*s+1)/((2*s-1))%
+Compensator = 1*(1/2.3*s+1)/((10*s-1))%
 %Compensator = 1*(.2*s+1)*(.5*s+1)/((2*s-1))%b
 %Compensator = 1*(.2*s+1)*(.5*s+1)*(.25*s+1)/((2*s-1))%
 
@@ -52,7 +52,7 @@ Compensator = 1*(.5*s+1)/((2*s-1))%
 %rlocus(-Compensator*VctoTheta);
 
 
-system = VctoTheta;
+system = -VctoTheta;
 systemPIDL = -VctoTheta;
 systemCompL = -Compensator*VctoTheta;
 
@@ -84,7 +84,7 @@ margin(systemCompL);
 %%
 %convert to z plane
 
-systemZ = c2d(-Kloop*Compensator,.02);
+systemZ = c2d(Kloop*Compensator,.02);
 
 
 
