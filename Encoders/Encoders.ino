@@ -128,9 +128,9 @@ void countStuff(){
   tosend[1] = byte(E1StepsOut>>8);
   tosend[2] = byte(E2StepsOut);
   tosend[3] = byte(E2StepsOut>>8);
-  Serial.print(E1StepsOut);
-  Serial.print(',');
-  Serial.println(E2StepsOut);
+  //Serial.print(E1StepsOut);
+  //Serial.print(',');
+  //Serial.println(E2StepsOut);
 }
 
 void requestEvent(){

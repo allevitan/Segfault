@@ -17,7 +17,7 @@ s = tf('s');
 [VtoWs, VtoU, VtoTheta] = generateTF(k,R,L,rp0,mp0,Ip0);
 %[VtoWs, VtoU, VtoTheta] = generateTF(k,R,L,rp,mp,Ip);
 
-Kv = 10;
+Kv = 1;
 
 VctoWs = minreal(Kv*VtoWs/ (1+Kv*VtoWs));
 VctoU = minreal(Kv*VtoU/ (1+Kv*VtoWs));
@@ -27,24 +27,19 @@ VctoTheta = minreal(Kv*VtoTheta/ (1+Kv*VtoWs));
 
 %pzmap(VctoTheta);
 
-Kv2 = 10;
-
-VcctoWs = minreal(Kv2*VctoWs/ (1+Kv2*VctoTheta*s));
-VcctoU = minreal(Kv2*VctoU/ (1+Kv2*VctoTheta*s));
-VcctoTheta = minreal(Kv2*VctoTheta/ (1+Kv2*VctoTheta*s));
-
 %rlocus(VctoTheta*s)
 
-pzmap(VcctoTheta);
+Compensator = (s+2.5)/(s);
+rlocus(-Compensator*VctoTheta);
+%rlocus(-VctoTheta);
 
-Compensator = (s+3)/(s);
-%rlocus(-Compensator*VctoTheta);
+Kloop = 7;
 
-Kloop = 30;
+System = minreal(-Kloop*Compensator*VctoTheta/(1-Kloop*Compensator*VctoTheta));
+%System = minreal(-Kloop*Compensator*VcctoTheta/(1-Kloop*Compensator*VcctoTheta));
 
-%System = minreal(-Kloop*Compensator*VctoTheta/(1-Kloop*Compensator*VctoTheta));
-System = minreal(-Kloop*Compensator*VcctoTheta/(1-Kloop*Compensator*VcctoTheta));
+c2d(Kloop*Compensator,0.02,'tustin')
 
 t = linspace(0,10,1000);
 u = [1,1, zeros(1,length(t)-2)];
-%lsim(System,u,t,1);
+lsim(System,u,t,1);

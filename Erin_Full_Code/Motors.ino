@@ -41,3 +41,14 @@ void driveMotorLS(int8_t data){
     Serial1.write(0x7F & (SYREN_ADDR + CMD_BACKWARD2 + byte(-data)));
   }
 }
+
+
+void VelocityControlMotorRS(float Target_Velocity){
+  omega_error = Target_Velocity - encoder_RS;
+  driveMotorRS(max(-127,min(127,omega_error*kv_converted)));
+}
+
+void VelocityControlMotorLS(float Target_Velocity){
+  omega_error = Target_Velocity - encoder_LS;
+  driveMotorLS(max(-127,min(127,omega_error*kv_converted)));
+}
